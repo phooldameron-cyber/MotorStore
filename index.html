@@ -442,7 +442,7 @@
             <span class="text-xs font-bold tracking-[0.16em] uppercase text-rose-400">Página de compra</span>
             <h2 class="text-3xl font-extrabold tracking-tight text-white">Cesto de compras</h2>
             <p class="text-sm text-neutral-300">
-              Revisa tus coches en el grid: puedes abrir su modal, retractarte y quitar cualquiera o confirmar la compra.
+              Revisa tus coches en el grid, ingresa tu número de cédula o C.I., elige cómo pagar y confirma la compra.
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-3">
@@ -460,6 +460,73 @@
         </div>
 
         <div id="cartGridItems" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+        <!-- DATOS DE C.I. Y MÉTODO DE PAGO TÍPICO -->
+        <div id="cartCheckoutDetails" class="rounded-2xl ios-glass-sub p-5 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-white">Datos de facturación y forma de pago</h3>
+              <p class="text-xs text-neutral-400">Completa tu número de cédula o C.I. y selecciona con qué vas a pagar antes de confirmar.</p>
+            </div>
+            <span id="checkoutPaymentBadge" class="rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-neutral-200 px-3 py-1">
+              Pago: Tarjeta de crédito / débito
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+            <div class="md:col-span-5 space-y-1.5">
+              <label for="buyerCiInput" class="block text-xs font-semibold text-neutral-200">
+                Número de cédula o C.I. <span class="text-rose-400">*</span>
+              </label>
+              <input
+                type="text"
+                id="buyerCiInput"
+                placeholder="Ej. 7894561 LP / C.I."
+                autocomplete="off"
+                class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3.5 py-2.5 text-sm focus:outline-none focus:border-rose-400"
+              />
+              <div id="buyerCiError" class="text-xs text-rose-400 min-h-[1rem]"></div>
+            </div>
+
+            <div class="md:col-span-7 space-y-2">
+              <span class="block text-xs font-semibold text-neutral-200">
+                ¿Con qué lo vas a pagar?
+              </span>
+              <div id="paymentMethodsGroup" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button
+                  type="button"
+                  data-payment="Tarjeta de crédito / débito"
+                  class="pay-method-btn rounded-xl border border-audiRed bg-audiRed/25 text-white text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer"
+                >
+                  💳 Tarjeta
+                </button>
+                <button
+                  type="button"
+                  data-payment="Efectivo"
+                  class="pay-method-btn rounded-xl border border-white/15 bg-black/35 hover:bg-white/10 text-neutral-200 text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer"
+                >
+                  💵 Efectivo
+                </button>
+                <button
+                  type="button"
+                  data-payment="Transferencia bancaria"
+                  class="pay-method-btn rounded-xl border border-white/15 bg-black/35 hover:bg-white/10 text-neutral-200 text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer"
+                >
+                  🏦 Transferencia
+                </button>
+                <button
+                  type="button"
+                  data-payment="QR / Billetera móvil"
+                  class="pay-method-btn rounded-xl border border-white/15 bg-black/35 hover:bg-white/10 text-neutral-200 text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer"
+                >
+                  📱 QR / Móvil
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="extraPaymentFields" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1"></div>
+        </div>
       </div>
     </section>
 
@@ -1093,6 +1160,7 @@
     let deletedItems = [];
     let categories = [];
     let cartItems = [];
+    let selectedPaymentMethod = "Tarjeta de crédito / débito";
     let currentView = "home";
     let previousViewBeforeCart = "models";
     let activeDrive = "Todos";
@@ -1138,6 +1206,10 @@
     const btnCheckoutCart = document.getElementById("btnCheckoutCart");
     const navCartCount = document.getElementById("navCartCount");
     const detailCartCount = document.getElementById("detailCartCount");
+    const buyerCiInput = document.getElementById("buyerCiInput");
+    const buyerCiError = document.getElementById("buyerCiError");
+    const checkoutPaymentBadge = document.getElementById("checkoutPaymentBadge");
+    const extraPaymentFields = document.getElementById("extraPaymentFields");
 
     const sessionBadge = document.getElementById("sessionBadge");
     const btnNavAdmin = document.getElementById("btnNavAdmin");
@@ -1555,6 +1627,83 @@
 
     document.getElementById("btnCloseClientModal").addEventListener("click", closeClientCarModal);
 
+    /* MÉTODO DE PAGO Y C.I. EN CESTO */
+    function renderExtraPaymentFields() {
+      if (!extraPaymentFields) return;
+      if (selectedPaymentMethod === "Tarjeta de crédito / débito") {
+        extraPaymentFields.innerHTML = `
+          <div>
+            <label for="payCardLast4" class="block text-xs font-medium text-neutral-300 mb-1">Últimos 4 dígitos o referencia</label>
+            <input type="text" id="payCardLast4" placeholder="Ej. 4532" maxlength="19" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+          </div>
+          <div>
+            <label for="payCardHolder" class="block text-xs font-medium text-neutral-300 mb-1">Titular de la tarjeta</label>
+            <input type="text" id="payCardHolder" placeholder="Nombre en tarjeta" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+          </div>
+          <div>
+            <label for="payInstallments" class="block text-xs font-medium text-neutral-300 mb-1">Cuotas / Modalidad</label>
+            <select id="payInstallments" class="w-full rounded-xl border border-white/15 bg-neutral-900 text-white px-3 py-2 text-xs sm:text-sm">
+              <option value="Contado (1 pago)">Contado (1 pago)</option>
+              <option value="3 cuotas">3 cuotas</option>
+              <option value="6 cuotas">6 cuotas</option>
+              <option value="12 cuotas">12 cuotas</option>
+            </select>
+          </div>
+        `;
+      } else if (selectedPaymentMethod === "Transferencia bancaria") {
+        extraPaymentFields.innerHTML = `
+          <div class="sm:col-span-2">
+            <label for="payBankName" class="block text-xs font-medium text-neutral-300 mb-1">Banco de origen</label>
+            <input type="text" id="payBankName" placeholder="Ej. Banco Nacional / BCP / BNB" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+          </div>
+          <div>
+            <label for="payTransferRef" class="block text-xs font-medium text-neutral-300 mb-1">Nro. de comprobante (opcional)</label>
+            <input type="text" id="payTransferRef" placeholder="Ej. TRF-1029" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+          </div>
+        `;
+      } else if (selectedPaymentMethod === "Efectivo") {
+        extraPaymentFields.innerHTML = `
+          <div class="sm:col-span-3 rounded-xl bg-black/30 border border-white/10 px-3.5 py-2.5 text-xs text-neutral-300">
+            Pago en efectivo en concesionario o entrega acordada presentando tu C.I. original.
+          </div>
+        `;
+      } else {
+        extraPaymentFields.innerHTML = `
+          <div class="sm:col-span-3 rounded-xl bg-black/30 border border-white/10 px-3.5 py-2.5 text-xs text-neutral-300">
+            Pago rápido mediante código QR o billetera móvil vinculada a tu C.I. al confirmar la orden.
+          </div>
+        `;
+      }
+    }
+
+    function setPaymentMethod(methodName) {
+      selectedPaymentMethod = methodName;
+      if (checkoutPaymentBadge) {
+        checkoutPaymentBadge.textContent = `Pago: ${selectedPaymentMethod}`;
+      }
+      document.querySelectorAll(".pay-method-btn").forEach((btn) => {
+        const isSelected = btn.dataset.payment === methodName;
+        if (isSelected) {
+          btn.className = "pay-method-btn rounded-xl border border-audiRed bg-audiRed/25 text-white text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer";
+        } else {
+          btn.className = "pay-method-btn rounded-xl border border-white/15 bg-black/35 hover:bg-white/10 text-neutral-200 text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer";
+        }
+      });
+      renderExtraPaymentFields();
+    }
+
+    document.querySelectorAll(".pay-method-btn").forEach((btn) => {
+      btn.addEventListener("click", () => setPaymentMethod(btn.dataset.payment));
+    });
+
+    if (buyerCiInput) {
+      buyerCiInput.addEventListener("input", () => {
+        if (buyerCiInput.value.trim().length > 0 && buyerCiError) {
+          buyerCiError.textContent = "";
+        }
+      });
+    }
+
     function retractCartItem(uid) {
       const target = cartItems.find((entry) => entry.uid === uid);
       if (!target) return;
@@ -1569,12 +1718,24 @@
     function retractAllCart() {
       if (cartItems.length === 0) return;
       cartItems = [];
+      if (buyerCiError) buyerCiError.textContent = "";
       renderCartGrid();
       showBanner("Te retractaste de la compra: el cesto se vació y el stock sigue intacto.");
     }
 
     async function checkoutCart() {
       if (cartItems.length === 0) return;
+
+      const ciValue = buyerCiInput ? buyerCiInput.value.trim() : "";
+      if (!ciValue || ciValue.length < 4) {
+        if (buyerCiError) {
+          buyerCiError.textContent = "Por favor ingresa tu número de cédula o C.I. (mínimo 4 caracteres).";
+        }
+        if (buyerCiInput) buyerCiInput.focus();
+        showBanner("Debes ingresar tu número de cédula o C.I. para confirmar la compra.", true);
+        return;
+      }
+      if (buyerCiError) buyerCiError.textContent = "";
 
       const qtyByCarId = new Map();
       for (const entry of cartItems) {
@@ -1618,7 +1779,7 @@
       if (isAdmin()) renderAdminProducts();
 
       showBanner(
-        `¡Compra confirmada y sincronizada en MockAPI! (${summaryParts.join(", ")}) · Total: $${totalPaid.toLocaleString("en-US")}.`
+        `¡Compra confirmada y sincronizada en MockAPI! (${summaryParts.join(", ")}) · C.I.: ${ciValue} · Pago: ${selectedPaymentMethod} · Total: $${totalPaid.toLocaleString("en-US")}.`
       );
     }
 
@@ -2617,6 +2778,7 @@
 
     (async function init() {
       syncCornerVolumeUI();
+      setPaymentMethod(selectedPaymentMethod);
       renderNews();
       renderCartGrid();
       syncSessionUI();
