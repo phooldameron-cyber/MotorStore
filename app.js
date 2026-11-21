@@ -1,0 +1,1915 @@
+const PRODUCTS_URL = "https://6aff17693a0e70bc8d549516.mockapi.io/products";
+const CATEGORIES_URL = "https://6aff17693a0e70bc8d549516.mockapi.io/categories";
+const USERS_URL = "https://6aff17693a0e70bc8d549516.mockapi.io/users";
+
+const ADMIN_USER = "phoolprado";
+const ADMIN_PASS = "123456789";
+const CLIENT_DISCOUNT_RATE = 0.03;
+const FULLSCREEN_VIDEO_MS = 4000;
+
+const DRIVE_FILTERS = [
+  "Todos",
+  "Gasolina / Diésel",
+  "Eléctrico",
+  "Híbrido enchufable"
+];
+
+const NEWS_HIGHLIGHTS = [
+  {
+    badge: "Eléctrico de nueva era",
+    title: "Audi Q6 e-tron",
+    modelTarget: "Audi Q6 e-tron",
+    description: "Q6 SUV e-tron en Azul Navarra con plataforma PPE de 800 voltios."
+  },
+  {
+    badge: "Deportividad RS",
+    title: "Audi A3 · RS 3 Sedan",
+    modelTarget: "Audi A3",
+    description: "RS 3 Sedan en Rojo Progresivo con motor de 5 cilindros y 400 CV."
+  },
+  {
+    badge: "Gran Turismo Eléctrico",
+    title: "Audi e-tron GT",
+    modelTarget: "Audi e-tron GT",
+    description: "RS e-tron GT performance en Negro Mito con 925 CV."
+  }
+];
+
+const COLOR_MAP = {
+  "Blanco": "#f2f4f7",
+  "Blanco Glaciar": "#f2f4f7",
+  "Gris": "#6e737b",
+  "Negro": "#1c1d21",
+  "Negro Mito": "#1c1d21",
+  "Gris Daytona": "#6e737b",
+  "Gris Nardo": "#8f949c",
+  "Azul": "#1d3f72",
+  "Azul Navarra": "#1d3f72",
+  "Rojo": "#bb0a30",
+  "Rojo Progresivo": "#bb0a30",
+  "Verde": "#4d5d44",
+  "Verde Distrito": "#4d5d44",
+  "Plata": "#c7ccd1",
+  "Plata Florete": "#c7ccd1"
+};
+
+const SEED_CATALOG = [
+  {
+    model: "Audi A1",
+    submodel: "A1 Sportback",
+    driveType: "Gasolina / Diésel",
+    price: 28900,
+    stock: 12,
+    horsepower: 116,
+    accel: "9.4 s",
+    traction: "Delantera",
+    color: "Blanco Glaciar",
+    colors: "Blanco Glaciar",
+    url: "https://www.perezloizeau.com/images/2012/12/Audi_A1_Sportback_21.jpg",
+    description: "Compacto urbano con diseño dinámico, cabina digital y agilidad precisa."
+  },
+  {
+    model: "Audi A2 e-tron",
+    submodel: "Audi A2 e-tron",
+    driveType: "Eléctrico",
+    price: 38500,
+    stock: 5,
+    horsepower: 204,
+    accel: "7.3 s",
+    traction: "Trasera / quattro",
+    color: "Azul Navarra",
+    colors: "Azul Navarra",
+    url: "https://images.prismic.io/carwow/z_oZVVE_T93PF0K1_audi-a2-e-tron-exterior-01.jpg?auto=format&cs=tinysrgb&fit=max&q=60",
+    description: "Movilidad 100 % eléctrica compacta diseñada para máxima eficiencia urbana."
+  },
+  {
+    model: "Audi A3",
+    submodel: "RS 3 Sedan",
+    driveType: "Gasolina / Diésel",
+    price: 90680,
+    stock: 3,
+    horsepower: 400,
+    accel: "3.8 s",
+    traction: "quattro",
+    color: "Rojo Progresivo",
+    colors: "Rojo Progresivo",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToi_njnhFr9_JDTl4iJ6pvUbhI1D-MYGr3YZBaSSgegMgS7ruMLEvdubw&s=10",
+    description: "Potencia RS de 400 CV de 5 cilindros en formato sedán de pista y carretera."
+  },
+  {
+    model: "Audi A5",
+    submodel: "A5",
+    driveType: "Gasolina / Diésel",
+    price: 48900,
+    stock: 8,
+    horsepower: 204,
+    accel: "7.2 s",
+    traction: "quattro",
+    color: "Gris Daytona",
+    colors: "Gris Daytona",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxHIIGkp3aStOr2z6Vjdf2pF3tfzKvGm-JlX6SUY_Z6XR4MnboQJoc_zo&s=10",
+    description: "Nueva generación de berlina deportiva con interior panorámico."
+  },
+  {
+    model: "Audi A6",
+    submodel: "RS 6 Avant",
+    driveType: "Gasolina / Diésel",
+    price: 152000,
+    stock: 2,
+    horsepower: 600,
+    accel: "3.6 s",
+    traction: "quattro",
+    color: "Gris Nardo",
+    colors: "Gris Nardo",
+    url: "https://noticias.pro.pvt.coches.com/wp-content/uploads/2021/05/Audi-RS-6-Avant-2021-prueba-7.jpg?force_format=original&w=1600&h=900",
+    description: "V8 biturbo de 600 CV: superdeportivo con alma familiar."
+  },
+  {
+    model: "Audi A6 e-tron",
+    submodel: "A6 Sportback e-tron",
+    driveType: "Eléctrico",
+    price: 68290,
+    stock: 5,
+    horsepower: 367,
+    accel: "5.4 s",
+    traction: "Trasera / quattro",
+    color: "Plata Florete",
+    colors: "Plata Florete",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9pCgtZaGnuCTSN-15m6EqenqbwRGCvsIljk_YU8TFX7FmTYGortv8WroB&s=10",
+    description: "Coeficiente aerodinámico Cx 0,21 para máxima autonomía eléctrica."
+  },
+  {
+    model: "Audi e-tron GT",
+    submodel: "RS e-tron GT performance",
+    driveType: "Eléctrico",
+    price: 166900,
+    stock: 2,
+    horsepower: 925,
+    accel: "2.5 s",
+    traction: "quattro",
+    color: "Negro Mito",
+    colors: "Negro Mito",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKmufIScEQMZT6B9QseZKEmMC_8DZll3Tv0M8oHSAjGLtGVgU9aLsvyCqU&s=10",
+    description: "El Audi de serie más potente jamás fabricado: 925 CV."
+  },
+  {
+    model: "Audi Q2",
+    submodel: "SQ2 TFSI",
+    driveType: "Gasolina / Diésel",
+    price: 56900,
+    stock: 4,
+    horsepower: 300,
+    accel: "4.9 s",
+    traction: "quattro",
+    color: "Azul Navarra",
+    colors: "Azul Navarra",
+    url: "https://images.carexpert.com.au/resize/480/-/cms/v1/media/2024-02-2024-audi-q2-35-tfsireviewhero-16x9-1.jpg",
+    description: "300 CV y tracción quattro en formato SUV compacto."
+  },
+  {
+    model: "Audi Q3",
+    submodel: "Q3 Sportback",
+    driveType: "Gasolina / Diésel",
+    price: 50430,
+    stock: 6,
+    horsepower: 150,
+    accel: "9.1 s",
+    traction: "Delantera / quattro",
+    color: "Blanco Glaciar",
+    colors: "Blanco Glaciar",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYyIwdUqRiRMnZ_DL71d9AfdLlrmvR-eh9LqOtyN1UQEgUQbRnC3_PAGY&s=10",
+    description: "Línea de techo coupé con el carácter práctico de un SUV."
+  },
+  {
+    model: "Audi Q4 e-tron",
+    submodel: "Q4 Sportback e-tron",
+    driveType: "Eléctrico",
+    price: 52070,
+    stock: 4,
+    horsepower: 286,
+    accel: "6.7 s",
+    traction: "Trasera / quattro",
+    color: "Gris Daytona",
+    colors: "Gris Daytona",
+    url: "https://cdn.motor1.com/images/mgl/Zp4W3/s1/audi-q4-e-tron-sportback-concept.webp",
+    description: "Silueta Sportback eléctrica con mayor eficiencia aerodinámica."
+  },
+  {
+    model: "Audi Q5",
+    submodel: "SQ5 SUV",
+    driveType: "Gasolina / Diésel",
+    price: 98270,
+    stock: 3,
+    horsepower: 367,
+    accel: "4.5 s",
+    traction: "quattro",
+    color: "Negro Mito",
+    colors: "Negro Mito",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrRPRKUVB8zW5A49lMi91EhPCuOpCbVMjSRCyU0t0Zfw&s",
+    description: "V6 TFSI de 367 CV con sonido deportivo S."
+  },
+  {
+    model: "Audi Q6 e-tron",
+    submodel: "Q6 SUV e-tron",
+    driveType: "Eléctrico",
+    price: 66370,
+    stock: 10,
+    horsepower: 326,
+    accel: "6.6 s",
+    traction: "Trasera / quattro",
+    color: "Azul Navarra",
+    colors: "Azul Navarra",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqO6wL8DzfYnZyvTkAGINo6zjMfVnCI-DcqDrUbNHrGw&s",
+    description: "Plataforma PPE de 800 voltios con carga ultrarrápida y firma lumínica digital."
+  },
+  {
+    model: "Audi Q7",
+    submodel: "Q7 SUV",
+    driveType: "Gasolina / Diésel",
+    price: 95630,
+    stock: 4,
+    horsepower: 286,
+    accel: "6.1 s",
+    traction: "quattro",
+    color: "Plata Florete",
+    colors: "Plata Florete",
+    url: "https://emea-dam.audi.com/adobe/assets/urn:aaid:aem:cb62d2d7-4668-4779-80f6-5e791725d19e/as/Q7_2023_5435-ed-teaser.jpg?width=342",
+    description: "SUV de lujo de gran tamaño con suspensión neumática y dirección a las 4 ruedas."
+  },
+  {
+    model: "Audi Q8",
+    submodel: "RS Q8 SUV performance",
+    driveType: "Gasolina / Diésel",
+    price: 194020,
+    stock: 2,
+    horsepower: 640,
+    accel: "3.6 s",
+    traction: "quattro",
+    color: "Rojo Progresivo",
+    colors: "Rojo Progresivo",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4sMPbDjAHB0OTQqiGbKDb7r6Rd2kQRRB_taiv4anvz5torqKWMiZ_XW7E&s=10",
+    description: "640 CV: el SUV de combustión más poderoso creado por Audi Sport."
+  },
+  {
+    model: "Audi Q9",
+    submodel: "Audi Q9",
+    driveType: "Gasolina / Diésel",
+    price: 118000,
+    stock: 2,
+    horsepower: 367,
+    accel: "5.9 s",
+    traction: "quattro",
+    color: "Negro Mito",
+    colors: "Negro Mito",
+    url: "https://www.thesupercarblog.com/wp-content/uploads/2026/07/2027-audi-sq9-500x280.jpg",
+    description: "SUV de gran formato con tres filas de lujo absoluto y confort ejecutivo."
+  },
+  {
+    model: "Audi Nuvolari",
+    submodel: "Audi Nuvolari",
+    driveType: "Gasolina / Diésel",
+    price: 215000,
+    stock: 1,
+    horsepower: 600,
+    accel: "3.7 s",
+    traction: "quattro",
+    color: "Plata Florete",
+    colors: "Plata Florete",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0Tv4M8zkmds_x50C6cKUTrWdso11p-BpoeLHeSDRDIg&s=10",
+    description: "Coupé gran turismo exclusivo de edición limitada y máxima velocidad."
+  }
+];
+
+let users = [];
+let currentUser = null;
+let items = [];
+let deletedItems = [];
+let categories = [];
+let cartItems = [];
+let selectedPaymentMethod = "Tarjeta de crédito / débito";
+let currentView = "home";
+let previousViewBeforeCart = "models";
+let activeDrive = "Todos";
+let selectedCarId = null;
+let modalInspectedProductId = null;
+let clientModalCarId = null;
+let isLocalFallback = false;
+let hasStartedExperience = false;
+let isSyncingNow = false;
+
+const ignitionGate = document.getElementById("ignitionGate");
+const btnStartAudiUnlimitless = document.getElementById("btnStartAudiUnlimitless");
+
+const bgVideoStage = document.getElementById("bgVideoStage");
+const bgVideoScrim = document.getElementById("bgVideoScrim");
+const bgAudiVideo = document.getElementById("bgAudiVideo");
+const heroAudiVideo = document.getElementById("heroAudiVideo");
+const loadingOverlay = document.getElementById("loadingOverlay");
+
+const btnCornerMute = document.getElementById("btnCornerMute");
+const cornerVolumeSlider = document.getElementById("cornerVolumeSlider");
+const cornerVolumePercent = document.getElementById("cornerVolumePercent");
+
+const homeView = document.getElementById("homeView");
+const modelsTabView = document.getElementById("modelsTabView");
+const carDetailView = document.getElementById("carDetailView");
+const cartView = document.getElementById("cartView");
+const adminView = document.getElementById("adminView");
+const statusAlert = document.getElementById("statusAlert");
+
+const heroTextCol = document.getElementById("heroTextCol");
+const heroVideoCol = document.getElementById("heroVideoCol");
+const btnExpandHeroVideo = document.getElementById("btnExpandHeroVideo");
+
+const newsGrid = document.getElementById("newsGrid");
+const driveFilters = document.getElementById("driveFilters");
+const searchInput = document.getElementById("searchInput");
+const modelsGrid = document.getElementById("modelsGrid");
+
+const cartGridItems = document.getElementById("cartGridItems");
+const cartTotalPrice = document.getElementById("cartTotalPrice");
+const btnRetractAllCart = document.getElementById("btnRetractAllCart");
+const btnCheckoutCart = document.getElementById("btnCheckoutCart");
+const navCartCount = document.getElementById("navCartCount");
+const detailCartCount = document.getElementById("detailCartCount");
+const buyerCiInput = document.getElementById("buyerCiInput");
+const buyerCiError = document.getElementById("buyerCiError");
+const checkoutPaymentBadge = document.getElementById("checkoutPaymentBadge");
+const extraPaymentFields = document.getElementById("extraPaymentFields");
+
+const sessionBadge = document.getElementById("sessionBadge");
+const btnNavAdmin = document.getElementById("btnNavAdmin");
+const btnOpenLogin = document.getElementById("btnOpenLogin");
+const btnHeroLogin = document.getElementById("btnHeroLogin");
+const btnCardAuth = document.getElementById("btnCardAuth");
+const btnLogout = document.getElementById("btnLogout");
+
+const authModal = document.getElementById("authModal");
+const tabLogin = document.getElementById("tabLogin");
+const tabRegister = document.getElementById("tabRegister");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const loginError = document.getElementById("loginError");
+const registerError = document.getElementById("registerError");
+
+const productForm = document.getElementById("productForm");
+const btnCancelForm = document.getElementById("btnCancelForm");
+const btnSubmitProduct = document.getElementById("btnSubmitProduct");
+const adminProductList = document.getElementById("adminProductList");
+const adminDeletedList = document.getElementById("adminDeletedList");
+const adminUsersList = document.getElementById("adminUsersList");
+const adminSearchInput = document.getElementById("adminSearchInput");
+const adminFilterDrive = document.getElementById("adminFilterDrive");
+const fCategory = document.getElementById("fCategory");
+
+const clientCarModal = document.getElementById("clientCarModal");
+const adminDetailModal = document.getElementById("adminDetailModal");
+const modalDetailTitle = document.getElementById("modalDetailTitle");
+const modalDetailImg = document.getElementById("modalDetailImg");
+const modalDetailNoImg = document.getElementById("modalDetailNoImg");
+const modalDetailBody = document.getElementById("modalDetailBody");
+const adminFormattedDetailSection = document.getElementById("adminFormattedDetailSection");
+const adminRawJsonSection = document.getElementById("adminRawJsonSection");
+const modalRawJsonCode = document.getElementById("modalRawJsonCode");
+const btnToggleRawJson = document.getElementById("btnToggleRawJson");
+
+const jsonHeaders = { "Content-Type": "application/json" };
+
+let musicVolumePercent = Number(cornerVolumeSlider?.value || 80);
+let isMusicMuted = false;
+
+function syncCornerVolumeUI() {
+  const effectivePct = isMusicMuted ? 0 : Math.round(musicVolumePercent);
+  if (cornerVolumeSlider) cornerVolumeSlider.value = String(effectivePct);
+  if (cornerVolumePercent) cornerVolumePercent.textContent = `${effectivePct}%`;
+  if (btnCornerMute) {
+    if (isMusicMuted || effectivePct === 0) {
+      btnCornerMute.textContent = "🔇";
+      btnCornerMute.title = "Activar audio";
+    } else if (effectivePct < 50) {
+      btnCornerMute.textContent = "🔉";
+      btnCornerMute.title = "Mutear audio";
+    } else {
+      btnCornerMute.textContent = "🔊";
+      btnCornerMute.title = "Mutear audio";
+    }
+  }
+}
+
+function applyLocalAudioState() {
+  syncCornerVolumeUI();
+  if (!bgAudiVideo) return;
+  bgAudiVideo.volume = Math.max(0, Math.min(1, musicVolumePercent / 100));
+  bgAudiVideo.muted = !hasStartedExperience || isMusicMuted || musicVolumePercent <= 0;
+  if (heroAudiVideo) {
+    heroAudiVideo.muted = true;
+    heroAudiVideo.volume = 0;
+  }
+  if (hasStartedExperience && !bgAudiVideo.muted && bgAudiVideo.paused) {
+    const p = bgAudiVideo.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
+  }
+}
+
+if (cornerVolumeSlider) {
+  cornerVolumeSlider.addEventListener("input", (e) => {
+    const pct = Number(e.target.value);
+    if (pct > 0) {
+      musicVolumePercent = pct;
+      isMusicMuted = false;
+    } else {
+      isMusicMuted = true;
+    }
+    applyLocalAudioState();
+  });
+}
+
+if (btnCornerMute) {
+  btnCornerMute.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (isMusicMuted || musicVolumePercent <= 0) {
+      isMusicMuted = false;
+      if (musicVolumePercent <= 0) musicVolumePercent = 80;
+    } else {
+      isMusicMuted = true;
+    }
+    applyLocalAudioState();
+  });
+}
+
+let isHeroVideoExpanded = false;
+function setHeroVideoExpanded(expanded) {
+  isHeroVideoExpanded = Boolean(expanded);
+  if (isHeroVideoExpanded) {
+    heroTextCol.classList.remove("lg:col-span-6");
+    heroTextCol.classList.add("lg:col-span-4");
+    heroVideoCol.classList.remove("lg:col-span-6");
+    heroVideoCol.classList.add("lg:col-span-8");
+    btnExpandHeroVideo.textContent = "↙ Tamaño normal";
+  } else {
+    heroTextCol.classList.remove("lg:col-span-4");
+    heroTextCol.classList.add("lg:col-span-6");
+    heroVideoCol.classList.remove("lg:col-span-8");
+    heroVideoCol.classList.add("lg:col-span-6");
+    btnExpandHeroVideo.textContent = "⛶ Agrandar";
+  }
+}
+
+btnExpandHeroVideo.addEventListener("click", (e) => {
+  e.stopPropagation();
+  setHeroVideoExpanded(!isHeroVideoExpanded);
+});
+
+function transitionVideoToBackground() {
+  loadingOverlay.classList.add("opacity-0");
+  setTimeout(() => {
+    loadingOverlay.classList.add("hidden");
+  }, 450);
+
+  if (bgVideoStage) {
+    bgVideoStage.classList.remove("z-40");
+    bgVideoStage.classList.add("-z-10");
+  }
+  if (bgVideoScrim) {
+    bgVideoScrim.classList.remove("opacity-0");
+    bgVideoScrim.classList.add("opacity-100");
+  }
+}
+
+btnStartAudiUnlimitless.addEventListener("click", () => {
+  hasStartedExperience = true;
+  isMusicMuted = false;
+  if (musicVolumePercent <= 0) musicVolumePercent = 80;
+
+  if (bgAudiVideo) {
+    bgAudiVideo.muted = false;
+    bgAudiVideo.volume = Math.max(0.05, Math.min(1, musicVolumePercent / 100));
+    bgAudiVideo.currentTime = 0;
+    const p = bgAudiVideo.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
+  }
+  if (heroAudiVideo) {
+    heroAudiVideo.muted = true;
+    heroAudiVideo.currentTime = 0;
+    const hp = heroAudiVideo.play();
+    if (hp && typeof hp.catch === "function") hp.catch(() => {});
+  }
+  syncCornerVolumeUI();
+
+  ignitionGate.classList.add("opacity-0");
+  setTimeout(() => {
+    ignitionGate.classList.add("hidden");
+  }, 450);
+
+  loadingOverlay.classList.remove("hidden", "opacity-0");
+  setTimeout(() => {
+    transitionVideoToBackground();
+  }, FULLSCREEN_VIDEO_MS);
+});
+
+async function apiRequest(url, options = {}) {
+  const fetchOptions = {
+    mode: "cors",
+    cache: "no-store",
+    ...options,
+    headers: options.body
+      ? { ...jsonHeaders, ...(options.headers || {}) }
+      : (options.headers || {})
+  };
+  const res = await fetch(url, fetchOptions);
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`HTTP ${res.status} (${url})${text ? `: ${text.slice(0, 100)}` : ""}`);
+  }
+  return res;
+}
+
+function getValidUrl(rawUrl) {
+  if (typeof rawUrl !== "string") return "";
+  const trimmed = rawUrl.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return "";
+}
+
+function isAdmin() {
+  return Boolean(currentUser && currentUser.role === "admin");
+}
+
+function hasClientDiscount() {
+  return Boolean(currentUser && (currentUser.role === "cliente" || currentUser.role === "privilegiado"));
+}
+
+function showBanner(msg, isError = false) {
+  if (!msg) {
+    statusAlert.classList.add("hidden");
+    statusAlert.textContent = "";
+    return;
+  }
+  statusAlert.textContent = msg;
+  statusAlert.classList.remove("hidden", "border-rose-500/40", "text-rose-200", "border-white/15", "text-neutral-100");
+  if (isError) {
+    statusAlert.classList.add("border-rose-500/40", "text-rose-200");
+  } else {
+    statusAlert.classList.add("border-white/15", "text-neutral-100");
+  }
+}
+
+function getEffectivePrice(basePrice) {
+  const n = Number(basePrice || 0);
+  return hasClientDiscount() ? Math.round(n * (1 - CLIENT_DISCOUNT_RATE)) : n;
+}
+
+function toMockApiProductPayload(item) {
+  const colorStr = String(item.color || (Array.isArray(item.colors) ? item.colors[0] : item.colors) || "Blanco Glaciar").trim();
+  const imgUrl = getValidUrl(item.url || item.link || "");
+  return {
+    name: String(item.model || item.name || "Audi").trim(),
+    brand: "Audi",
+    categoryId: String(item.categoryId || ""),
+    year: Number(item.year || 2025),
+    price: Number(item.price || 45000),
+    stock: Number(item.stock ?? 0),
+    horsepower: Number(item.horsepower || 200),
+    transmission: String(item.transmission || "Automática S tronic"),
+    link: imgUrl,
+    description: String(item.description || ""),
+    estado: String(item.estado || (Number(item.stock ?? 0) > 0 ? "Disponible" : "Agotado")),
+    model: String(item.model || item.name || "Audi").trim(),
+    submodel: String(item.submodel || item.model || item.name || "Audi").trim(),
+    driveType: String(item.driveType || "Gasolina / Diésel"),
+    color: colorStr,
+    colors: colorStr,
+    accel: String(item.accel || "6.5 s"),
+    traction: String(item.traction || "quattro"),
+    url: imgUrl
+  };
+}
+
+function normalizeRecord(raw, idx = 0) {
+  const modelName = raw.model || raw.name || "Audi";
+  const seedMatch = SEED_CATALOG.find((s) => s.model === modelName);
+  const submodelName = seedMatch ? seedMatch.submodel : (raw.submodel || modelName);
+
+  let singleColor = "";
+  if (typeof raw.color === "string" && raw.color.trim()) {
+    singleColor = raw.color.trim();
+  } else if (Array.isArray(raw.colors) && raw.colors.length) {
+    singleColor = String(raw.colors[0]).trim();
+  } else if (typeof raw.colors === "string" && raw.colors.trim()) {
+    singleColor = raw.colors.split(",")[0].trim();
+  } else if (seedMatch) {
+    singleColor = seedMatch.color;
+  } else {
+    singleColor = "Blanco Glaciar";
+  }
+
+  const resolvedUrl = getValidUrl(raw.url || raw.link || raw.image || "") || (seedMatch ? seedMatch.url : "");
+
+  return {
+    id: raw.id ?? `local-${idx + 1}`,
+    model: modelName,
+    submodel: submodelName,
+    driveType: raw.driveType || (seedMatch ? seedMatch.driveType : "Gasolina / Diésel"),
+    categoryId: raw.categoryId || "",
+    year: Number(raw.year || 2025),
+    transmission: raw.transmission || "Automática S tronic",
+    estado: raw.estado || (Number(raw.stock ?? (seedMatch ? seedMatch.stock : 0)) > 0 ? "Disponible" : "Agotado"),
+    price: Number(raw.price || (seedMatch ? seedMatch.price : 45000)),
+    stock: Number(raw.stock ?? (seedMatch ? seedMatch.stock : 0)),
+    horsepower: Number(raw.horsepower || (seedMatch ? seedMatch.horsepower : 200)),
+    accel: raw.accel || (seedMatch ? seedMatch.accel : "6.5 s"),
+    traction: raw.traction || (seedMatch ? seedMatch.traction : "quattro"),
+    color: singleColor,
+    colors: singleColor,
+    url: resolvedUrl,
+    link: resolvedUrl,
+    description: raw.description || (seedMatch ? seedMatch.description : ""),
+    _raw: raw
+  };
+}
+
+async function autoSyncCatalog(existingItems = []) {
+  if (isSyncingNow) return existingItems;
+  isSyncingNow = true;
+  try {
+    for (const seed of SEED_CATALOG) {
+      const existing = existingItems.find((i) => i.model === seed.model);
+      const payload = toMockApiProductPayload({
+        ...seed,
+        categoryId: existing?.categoryId || ""
+      });
+
+      if (!existing || String(existing.id).startsWith("local-")) {
+        await apiRequest(PRODUCTS_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+      }
+    }
+
+    const res = await apiRequest(PRODUCTS_URL);
+    const refreshed = await res.json();
+    return Array.isArray(refreshed) ? refreshed.map((d, i) => normalizeRecord(d, i)) : existingItems;
+  } finally {
+    isSyncingNow = false;
+  }
+}
+
+function getReservedQuantityInCart(carId) {
+  return cartItems
+    .filter((entry) => String(entry.carId) === String(carId))
+    .reduce((acc, entry) => acc + entry.qty, 0);
+}
+
+function getAvailableStock(car) {
+  return Math.max(0, Number(car.stock || 0) - getReservedQuantityInCart(car.id));
+}
+
+function addToCart(car) {
+  const available = getAvailableStock(car);
+  if (available <= 0) {
+    showBanner(`No quedan más unidades disponibles de ${car.model} para añadir al cesto.`, true);
+    return;
+  }
+
+  const existing = cartItems.find((entry) => String(entry.carId) === String(car.id));
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cartItems.push({
+      uid: `${car.id}__${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      carId: car.id,
+      color: car.color,
+      qty: 1
+    });
+  }
+
+  renderCartGrid();
+  if (currentView === "detail") renderCarDetailPage();
+  if (!clientCarModal.classList.contains("hidden") && String(clientModalCarId) === String(car.id)) {
+    openClientCarModal(car.id);
+  }
+  showBanner(`Añadido al cesto: ${car.model} · ${car.submodel} (${car.color}).`);
+}
+
+function openClientCarModal(carId) {
+  const car = items.find((i) => String(i.id) === String(carId));
+  if (!car) return;
+  clientModalCarId = car.id;
+
+  document.getElementById("clientModalDrive").textContent = car.driveType;
+  document.getElementById("clientModalTitle").textContent =
+    car.model === car.submodel ? car.model : `${car.model} · ${car.submodel}`;
+  document.getElementById("clientModalDesc").textContent = car.description || "";
+  document.getElementById("clientModalHp").textContent = `${car.horsepower} HP`;
+  document.getElementById("clientModalAccel").textContent = car.accel;
+  document.getElementById("clientModalColor").textContent = car.color;
+
+  const img = document.getElementById("clientModalImg");
+  const noImg = document.getElementById("clientModalNoImg");
+  if (car.url) {
+    img.src = car.url;
+    img.alt = car.model;
+    img.classList.remove("hidden");
+    noImg.classList.add("hidden");
+  } else {
+    img.classList.add("hidden");
+    noImg.classList.remove("hidden");
+  }
+
+  const finalPrice = getEffectivePrice(car.price);
+  document.getElementById("clientModalPrice").textContent = `$${finalPrice.toLocaleString("en-US")}`;
+
+  const available = getAvailableStock(car);
+  const stockEl = document.getElementById("clientModalStock");
+  const addBtn = document.getElementById("btnClientModalAdd");
+
+  if (available > 0) {
+    stockEl.textContent = `${available} disponibles`;
+    stockEl.className = "text-xs text-emerald-400 mt-0.5";
+    addBtn.disabled = false;
+  } else {
+    stockEl.textContent = "Sin stock disponible";
+    stockEl.className = "text-xs text-rose-400 mt-0.5";
+    addBtn.disabled = true;
+  }
+
+  addBtn.onclick = () => addToCart(car);
+  document.getElementById("btnClientModalFullView").onclick = () => {
+    const targetId = clientModalCarId;
+    closeClientCarModal();
+    selectedCarId = targetId;
+    switchPage("detail");
+  };
+
+  clientCarModal.classList.remove("hidden");
+}
+
+function closeClientCarModal() {
+  clientCarModal.classList.add("hidden");
+  clientModalCarId = null;
+}
+
+document.getElementById("btnCloseClientModal").addEventListener("click", closeClientCarModal);
+
+function renderExtraPaymentFields() {
+  if (!extraPaymentFields) return;
+  if (selectedPaymentMethod === "Tarjeta de crédito / débito") {
+    extraPaymentFields.innerHTML = `
+      <div>
+        <label for="payCardLast4" class="block text-xs font-medium text-neutral-300 mb-1">Últimos 4 dígitos o referencia</label>
+        <input type="text" id="payCardLast4" placeholder="Ej. 4532" maxlength="19" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+      </div>
+      <div>
+        <label for="payCardHolder" class="block text-xs font-medium text-neutral-300 mb-1">Titular de la tarjeta</label>
+        <input type="text" id="payCardHolder" placeholder="Nombre en tarjeta" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+      </div>
+      <div>
+        <label for="payInstallments" class="block text-xs font-medium text-neutral-300 mb-1">Cuotas / Modalidad</label>
+        <select id="payInstallments" class="w-full rounded-xl border border-white/15 bg-neutral-900 text-white px-3 py-2 text-xs sm:text-sm">
+          <option value="Contado (1 pago)">Contado (1 pago)</option>
+          <option value="3 cuotas">3 cuotas</option>
+          <option value="6 cuotas">6 cuotas</option>
+          <option value="12 cuotas">12 cuotas</option>
+        </select>
+      </div>
+    `;
+  } else if (selectedPaymentMethod === "Transferencia bancaria") {
+    extraPaymentFields.innerHTML = `
+      <div class="sm:col-span-2">
+        <label for="payBankName" class="block text-xs font-medium text-neutral-300 mb-1">Banco de origen</label>
+        <input type="text" id="payBankName" placeholder="Ej. Banco Nacional / BCP / BNB" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+      </div>
+      <div>
+        <label for="payTransferRef" class="block text-xs font-medium text-neutral-300 mb-1">Nro. de comprobante (opcional)</label>
+        <input type="text" id="payTransferRef" placeholder="Ej. TRF-1029" class="w-full rounded-xl border border-white/15 bg-black/45 text-white placeholder-neutral-500 px-3 py-2 text-xs sm:text-sm" />
+      </div>
+    `;
+  } else if (selectedPaymentMethod === "Efectivo") {
+    extraPaymentFields.innerHTML = `
+      <div class="sm:col-span-3 rounded-xl bg-black/30 border border-white/10 px-3.5 py-2.5 text-xs text-neutral-300">
+        Pago en efectivo en concesionario o entrega acordada presentando tu C.I. original.
+      </div>
+    `;
+  } else {
+    extraPaymentFields.innerHTML = `
+      <div class="sm:col-span-3 rounded-xl bg-black/30 border border-white/10 px-3.5 py-2.5 text-xs text-neutral-300">
+        Pago rápido mediante código QR o billetera móvil vinculada a tu C.I. al confirmar la orden.
+      </div>
+    `;
+  }
+}
+
+function setPaymentMethod(methodName) {
+  selectedPaymentMethod = methodName;
+  if (checkoutPaymentBadge) {
+    checkoutPaymentBadge.textContent = `Pago: ${selectedPaymentMethod}`;
+  }
+  document.querySelectorAll(".pay-method-btn").forEach((btn) => {
+    const isSelected = btn.dataset.payment === methodName;
+    if (isSelected) {
+      btn.className = "pay-method-btn rounded-xl border border-audiRed bg-audiRed/25 text-white text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer";
+    } else {
+      btn.className = "pay-method-btn rounded-xl border border-white/15 bg-black/35 hover:bg-white/10 text-neutral-200 text-xs font-semibold px-3 py-2.5 text-left transition cursor-pointer";
+    }
+  });
+  renderExtraPaymentFields();
+}
+
+document.querySelectorAll(".pay-method-btn").forEach((btn) => {
+  btn.addEventListener("click", () => setPaymentMethod(btn.dataset.payment));
+});
+
+if (buyerCiInput) {
+  buyerCiInput.addEventListener("input", () => {
+    if (buyerCiInput.value.trim().length > 0 && buyerCiError) {
+      buyerCiError.textContent = "";
+    }
+  });
+}
+
+function retractCartItem(uid) {
+  const target = cartItems.find((entry) => entry.uid === uid);
+  if (!target) return;
+  const car = items.find((i) => String(i.id) === String(target.carId));
+  cartItems = cartItems.filter((entry) => entry.uid !== uid);
+  renderCartGrid();
+  if (car) {
+    showBanner(`Te retractaste de ${car.model} (${car.color}): se retiró del cesto sin descontar stock.`);
+  }
+}
+
+function retractAllCart() {
+  if (cartItems.length === 0) return;
+  cartItems = [];
+  if (buyerCiError) buyerCiError.textContent = "";
+  renderCartGrid();
+  showBanner("Te retractaste de la compra: el cesto se vació y el stock sigue intacto.");
+}
+
+async function checkoutCart() {
+  if (cartItems.length === 0) return;
+
+  const ciValue = buyerCiInput ? buyerCiInput.value.trim() : "";
+  if (!ciValue || ciValue.length < 4) {
+    if (buyerCiError) {
+      buyerCiError.textContent = "Por favor ingresa tu número de cédula o C.I. (mínimo 4 caracteres).";
+    }
+    if (buyerCiInput) buyerCiInput.focus();
+    showBanner("Debes ingresar tu número de cédula o C.I. para confirmar la compra.", true);
+    return;
+  }
+  if (buyerCiError) buyerCiError.textContent = "";
+
+  const qtyByCarId = new Map();
+  for (const entry of cartItems) {
+    qtyByCarId.set(String(entry.carId), (qtyByCarId.get(String(entry.carId)) || 0) + entry.qty);
+  }
+
+  let totalPaid = 0;
+  const summaryParts = [];
+
+  btnCheckoutCart.disabled = true;
+  btnRetractAllCart.disabled = true;
+
+  for (const [carIdStr, totalQty] of qtyByCarId.entries()) {
+    const car = items.find((i) => String(i.id) === carIdStr);
+    if (!car) continue;
+
+    const nextStock = Math.max(0, Number(car.stock) - totalQty);
+    const unitPrice = getEffectivePrice(car.price);
+    totalPaid += unitPrice * totalQty;
+    summaryParts.push(`${totalQty}x ${car.model}`);
+
+    if (isLocalFallback || String(car.id).startsWith("local-")) {
+      items = items.map((i) => (String(i.id) === String(car.id) ? { ...i, stock: nextStock } : i));
+    } else {
+      try {
+        const payload = toMockApiProductPayload({ ...car, stock: nextStock });
+        const res = await apiRequest(`${PRODUCTS_URL}/${car.id}`, {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
+        const updated = normalizeRecord(await res.json());
+        items = items.map((i) => (String(i.id) === String(car.id) ? updated : i));
+      } catch (_) {
+        items = items.map((i) => (String(i.id) === String(car.id) ? { ...i, stock: nextStock } : i));
+      }
+    }
+  }
+
+  cartItems = [];
+  renderCartGrid();
+  if (isAdmin()) renderAdminProducts();
+
+  showBanner(
+    `¡Compra confirmada y sincronizada en MockAPI! (${summaryParts.join(", ")}) · C.I.: ${ciValue} · Pago: ${selectedPaymentMethod} · Total: $${totalPaid.toLocaleString("en-US")}.`
+  );
+}
+
+function renderCartGrid() {
+  const totalUnits = cartItems.reduce((sum, entry) => sum + entry.qty, 0);
+  navCartCount.textContent = String(totalUnits);
+  if (detailCartCount) detailCartCount.textContent = String(totalUnits);
+
+  cartGridItems.innerHTML = "";
+  let grandTotal = 0;
+
+  if (cartItems.length === 0) {
+    cartTotalPrice.textContent = "$0";
+    btnRetractAllCart.disabled = true;
+    btnCheckoutCart.disabled = true;
+    cartGridItems.innerHTML = `
+      <div class="col-span-full rounded-2xl ios-glass-sub p-6 text-center text-sm text-neutral-400">
+        Tu cesto está vacío. Abre cualquier modelo y pulsa <strong>Añadir al cesto</strong> para venir aquí a comprar o retractarte.
+      </div>
+    `;
+    return;
+  }
+
+  btnRetractAllCart.disabled = false;
+  btnCheckoutCart.disabled = false;
+
+  cartItems.forEach((entry) => {
+    const car = items.find((i) => String(i.id) === String(entry.carId));
+    if (!car) return;
+
+    const carUrl = car.url;
+    const unitPrice = getEffectivePrice(car.price);
+    const lineTotal = unitPrice * entry.qty;
+    grandTotal += lineTotal;
+
+    const card = document.createElement("div");
+    card.className = "rounded-2xl ios-glass-card p-4 flex flex-col justify-between gap-3";
+    card.innerHTML = `
+      <div>
+        ${
+          carUrl
+            ? `<img src="${carUrl}" alt="${car.model} (${car.color})" class="w-full h-32 object-contain bg-black/35 border border-white/10 rounded-xl p-2 mb-3" onerror="this.style.display='none';" />`
+            : `<div class="w-full h-32 bg-black/35 border border-white/10 rounded-xl p-2 mb-3 flex flex-col items-center justify-center text-xs text-neutral-400">
+                 <span class="font-bold text-white">${car.model}</span>
+                 <span>${car.color}</span>
+               </div>`
+        }
+        <div class="flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold text-sm text-white">${car.model === car.submodel ? car.model : `${car.model} · ${car.submodel}`}</div>
+            <div class="text-xs text-neutral-400">Color: <strong class="text-neutral-200">${car.color}</strong> · Cant.: ${entry.qty}</div>
+          </div>
+          <div class="font-bold text-sm text-white">$${lineTotal.toLocaleString("en-US")}</div>
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2 border-t border-white/10">
+        <button type="button" data-uid="${entry.uid}" class="btn-retract-item flex-1 rounded-full border border-rose-500/60 text-rose-300 hover:bg-rose-600 hover:text-white text-xs font-semibold py-1.5 transition">
+          Retractarme / Quitar
+        </button>
+        <button type="button" data-car-id="${car.id}" class="btn-inspect-item rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 transition">
+          Ver coche
+        </button>
+      </div>
+    `;
+    cartGridItems.appendChild(card);
+  });
+
+  cartTotalPrice.textContent = `$${grandTotal.toLocaleString("en-US")}`;
+
+  cartGridItems.querySelectorAll(".btn-retract-item").forEach((btn) => {
+    btn.addEventListener("click", () => retractCartItem(btn.dataset.uid));
+  });
+
+  cartGridItems.querySelectorAll(".btn-inspect-item").forEach((btn) => {
+    btn.addEventListener("click", () => openClientCarModal(btn.dataset.carId));
+  });
+}
+
+async function fetchUsersFromApi() {
+  try {
+    const res = await apiRequest(USERS_URL);
+    const data = await res.json();
+    users = Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.warn("Error /users:", err.message);
+  }
+}
+
+function switchPage(page) {
+  if (page === "admin" && !isAdmin()) page = "home";
+  if (page === "cart" && currentView !== "cart") {
+    previousViewBeforeCart = currentView;
+  }
+  currentView = page;
+
+  homeView.classList.toggle("hidden", page !== "home");
+  modelsTabView.classList.toggle("hidden", page !== "models");
+  carDetailView.classList.toggle("hidden", page !== "detail");
+  cartView.classList.toggle("hidden", page !== "cart");
+  adminView.classList.toggle("hidden", page !== "admin");
+
+  if (page === "models") renderModelsGrid();
+  if (page === "detail") renderCarDetailPage();
+  if (page === "cart") renderCartGrid();
+  if (page === "admin") renderAdminPanel();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openModelDirect(modelName) {
+  const car = items.find((i) => i.model === modelName);
+  if (!car) {
+    switchPage("models");
+    return;
+  }
+  selectedCarId = car.id;
+  switchPage("detail");
+}
+
+function renderNews() {
+  newsGrid.innerHTML = "";
+  NEWS_HIGHLIGHTS.forEach((n) => {
+    const carMatch = items.find((i) => i.model === n.modelTarget);
+    const cardUrl = carMatch ? carMatch.url : "";
+    const article = document.createElement("article");
+    article.className = "rounded-3xl ios-glass-card overflow-hidden transition flex flex-col";
+    article.innerHTML = `
+      <div class="h-44 bg-black/30 border-b border-white/10 p-4 flex items-center justify-center">
+        ${
+          cardUrl
+            ? `<img src="${cardUrl}" alt="${n.title}" class="w-full h-full object-contain" onerror="this.style.display='none';" />`
+            : `<div class="text-center px-2">
+                 <div class="font-bold text-white">${n.title}</div>
+                 <div class="text-xs text-neutral-400">${carMatch ? `Color: ${carMatch.color}` : "URL en MockAPI"}</div>
+               </div>`
+        }
+      </div>
+      <div class="p-5 flex flex-col flex-grow space-y-2">
+        <span class="w-fit rounded-full bg-white/10 border border-white/15 text-neutral-200 text-xs font-semibold px-3 py-0.5">${n.badge}</span>
+        <h3 class="text-lg font-bold text-white">${n.title}</h3>
+        <p class="text-xs sm:text-sm text-neutral-300 flex-grow">${n.description}</p>
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button type="button" class="btn-news-full rounded-full bg-white/90 hover:bg-white text-neutral-950 text-xs font-semibold px-4 py-2 transition">
+            Ver ficha
+          </button>
+          ${
+            carMatch
+              ? `<button type="button" class="btn-news-modal rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-3.5 py-2 transition">
+                   Modal rápido
+                 </button>`
+              : ""
+          }
+        </div>
+      </div>
+    `;
+    article.querySelector(".btn-news-full").addEventListener("click", () => {
+      openModelDirect(n.modelTarget);
+    });
+    const modalBtn = article.querySelector(".btn-news-modal");
+    if (modalBtn && carMatch) {
+      modalBtn.addEventListener("click", () => openClientCarModal(carMatch.id));
+    }
+    newsGrid.appendChild(article);
+  });
+}
+
+async function loadCategories() {
+  try {
+    const res = await apiRequest(CATEGORIES_URL);
+    categories = await res.json();
+    fCategory.innerHTML = `<option value="">Sin categoría</option>`;
+    if (Array.isArray(categories)) {
+      categories.forEach((cat) => {
+        const opt = document.createElement("option");
+        opt.value = cat.id;
+        opt.textContent = cat.name || `Categoría ${cat.id}`;
+        fCategory.appendChild(opt);
+      });
+    }
+  } catch (_) {
+    categories = [];
+  }
+}
+
+async function loadProducts() {
+  showBanner("Sincronizando automáticamente con MockAPI...");
+  try {
+    const res = await apiRequest(PRODUCTS_URL);
+    const data = await res.json();
+    const apiItems = Array.isArray(data) ? data.map((d, i) => normalizeRecord(d, i)) : [];
+
+    items = await autoSyncCatalog(apiItems);
+    isLocalFallback = false;
+    showBanner("Sincronizado automáticamente con MockAPI (/products).");
+  } catch (err) {
+    items = SEED_CATALOG.map((d, i) => normalizeRecord(d, i));
+    isLocalFallback = true;
+    showBanner(
+      `No se pudo conectar con MockAPI (/products): ${err.message}. Mostrando catálogo local.`,
+      true
+    );
+  }
+
+  renderNews();
+  renderDriveFilters();
+  renderCartGrid();
+  if (currentView === "models") renderModelsGrid();
+  if (currentView === "detail") renderCarDetailPage();
+  if (currentView === "cart") renderCartGrid();
+  if (currentView === "admin" && isAdmin()) renderAdminPanel();
+}
+
+function renderDriveFilters() {
+  driveFilters.innerHTML = "";
+  DRIVE_FILTERS.forEach((drive) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    const active = activeDrive === drive;
+    btn.className = `rounded-full text-xs sm:text-sm font-medium px-4 py-1.5 border backdrop-blur-xl transition ${
+      active
+        ? "bg-audiRed text-white border-audiRed/80"
+        : "bg-white/10 text-neutral-100 border-white/15 hover:bg-white/20"
+    }`;
+    btn.textContent = drive;
+    btn.addEventListener("click", () => {
+      activeDrive = drive;
+      renderDriveFilters();
+      renderModelsGrid();
+    });
+    driveFilters.appendChild(btn);
+  });
+}
+
+function getFilteredModels() {
+  const q = searchInput.value.trim().toLowerCase();
+  return items.filter((item) => {
+    const matchesDrive = activeDrive === "Todos" || item.driveType === activeDrive;
+    const matchesQuery =
+      !q ||
+      item.model.toLowerCase().includes(q) ||
+      item.submodel.toLowerCase().includes(q) ||
+      item.color.toLowerCase().includes(q);
+    return matchesDrive && matchesQuery;
+  });
+}
+
+function renderModelsGrid() {
+  const models = getFilteredModels();
+  modelsGrid.innerHTML = "";
+
+  if (models.length === 0) {
+    modelsGrid.innerHTML = `<div class="col-span-full text-sm text-neutral-300">No se encontraron modelos con ese filtro.</div>`;
+    return;
+  }
+
+  models.forEach((car, idx) => {
+    const effectivePrice = getEffectivePrice(car.price);
+    const article = document.createElement("article");
+    article.className = "cursor-pointer rounded-3xl ios-glass-card transition flex flex-col justify-between animate-rise overflow-hidden";
+    article.style.animationDelay = `${Math.min(idx * 25, 220)}ms`;
+    article.innerHTML = `
+      <div>
+        <div class="p-4 pb-2 flex justify-between items-center gap-2">
+          <h3 class="text-lg font-bold text-white">${car.model}</h3>
+          <span class="rounded-full bg-white/10 border border-white/15 text-neutral-200 text-[11px] font-medium px-2.5 py-0.5">${car.driveType}</span>
+        </div>
+        <div class="mx-4 rounded-2xl bg-black/35 border border-white/10 h-40 p-3 flex items-center justify-center">
+          ${
+            car.url
+              ? `<img src="${car.url}" alt="${car.model}" class="w-full h-full object-contain" onerror="this.style.display='none';" />`
+              : `<div class="text-center px-2">
+                   <div class="font-bold text-sm text-white">${car.submodel}</div>
+                   <div class="text-xs text-neutral-400">Color: ${car.color}</div>
+                 </div>`
+          }
+        </div>
+      </div>
+      <div class="p-4 pt-3 flex items-center justify-between gap-2 text-xs sm:text-sm">
+        <span class="font-bold text-white">$${effectivePrice.toLocaleString("en-US")}</span>
+        <button type="button" class="btn-quick-modal rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1 transition">
+          Modal
+        </button>
+      </div>
+    `;
+    article.addEventListener("click", () => {
+      selectedCarId = car.id;
+      switchPage("detail");
+    });
+    article.querySelector(".btn-quick-modal").addEventListener("click", (e) => {
+      e.stopPropagation();
+      openClientCarModal(car.id);
+    });
+    modelsGrid.appendChild(article);
+  });
+}
+
+function renderCarDetailPage() {
+  const car = items.find((i) => String(i.id) === String(selectedCarId));
+  if (!car) {
+    switchPage("models");
+    return;
+  }
+
+  const stage = document.getElementById("showroomStage");
+  stage.style.borderColor = COLOR_MAP[car.color] || "#bb0a30";
+
+  document.getElementById("detailDriveBadge").textContent = car.driveType;
+  document.getElementById("detailColorTag").textContent = `Color: ${car.color}`;
+
+  const imgEl = document.getElementById("detailCarImg");
+  const placeholderEl = document.getElementById("detailCarPlaceholder");
+
+  if (car.url) {
+    imgEl.src = car.url;
+    imgEl.alt = `${car.model} — ${car.color}`;
+    imgEl.classList.remove("hidden");
+    placeholderEl.classList.add("hidden");
+  } else {
+    imgEl.classList.add("hidden");
+    placeholderEl.classList.remove("hidden");
+    document.getElementById("detailPlaceholderModel").textContent =
+      car.submodel === car.model ? car.model : `${car.model} · ${car.submodel}`;
+    document.getElementById("detailPlaceholderColor").textContent =
+      `Color asignado: ${car.color} · Coloca la URL en MockAPI`;
+  }
+
+  document.getElementById("statHp").textContent = `${car.horsepower} HP`;
+  document.getElementById("statAccel").textContent = car.accel;
+  document.getElementById("statTraction").textContent = car.traction;
+
+  document.getElementById("detailCarTitle").textContent =
+    car.submodel === car.model ? car.model : `${car.model} · ${car.submodel}`;
+  document.getElementById("detailCarDesc").textContent = car.description;
+
+  const hex = COLOR_MAP[car.color] || "#8e8e93";
+  document.getElementById("singleColorDisplay").innerHTML = `
+    <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 text-white px-4 py-1.5 text-sm font-semibold">
+      <span class="w-4 h-4 rounded-full border border-white/30" style="background:${hex}"></span>
+      <span>${car.color}</span>
+    </span>
+  `;
+
+  const finalPrice = getEffectivePrice(car.price);
+  document.getElementById("detailPriceFinal").textContent = `$${finalPrice.toLocaleString("en-US")}`;
+  const discountMsg = document.getElementById("detailDiscountMsg");
+  if (hasClientDiscount()) {
+    discountMsg.textContent = `3 % descuento cliente aplicado (Precio base: $${car.price.toLocaleString("en-US")})`;
+    discountMsg.className = "text-xs font-semibold text-emerald-400 mt-1";
+  } else {
+    discountMsg.textContent = "Inicia sesión o crea tu cuenta para aplicar 3 % de descuento";
+    discountMsg.className = "text-xs text-neutral-400 mt-1";
+  }
+
+  const available = getAvailableStock(car);
+  const reserved = getReservedQuantityInCart(car.id);
+  const stockLabel = document.getElementById("detailStockLabel");
+  const addBtn = document.getElementById("btnAddToCart");
+
+  if (available > 0) {
+    stockLabel.textContent = reserved > 0
+      ? `Disponibles para añadir: ${available} (${reserved} en tu cesto)`
+      : `Disponibilidad inmediata: ${car.stock} unidades en stock`;
+    stockLabel.className = "text-sm font-semibold text-emerald-400";
+    addBtn.disabled = false;
+    addBtn.textContent = "Añadir al cesto";
+  } else {
+    stockLabel.textContent = car.stock > 0
+      ? `Ya tienes todas las ${car.stock} unidades disponibles en tu cesto`
+      : "Sin stock disponible actualmente";
+    stockLabel.className = "text-sm font-semibold text-rose-400";
+    addBtn.disabled = true;
+    addBtn.textContent = car.stock > 0 ? "Máximo en cesto" : "Agotado";
+  }
+
+  addBtn.onclick = () => addToCart(car);
+}
+
+function syncSessionUI() {
+  if (currentUser) {
+    btnOpenLogin.classList.add("hidden");
+    btnHeroLogin.classList.add("hidden");
+    btnCardAuth.classList.add("hidden");
+    btnLogout.classList.remove("hidden");
+    sessionBadge.classList.remove("hidden");
+
+    if (currentUser.role === "admin") {
+      sessionBadge.textContent = `${currentUser.username} · Admin`;
+      btnNavAdmin.classList.remove("hidden");
+    } else if (currentUser.role === "privilegiado") {
+      sessionBadge.textContent = `${currentUser.name} · Privilegiado (3% OFF)`;
+      btnNavAdmin.classList.add("hidden");
+    } else {
+      sessionBadge.textContent = `${currentUser.name} · Cliente (3% OFF)`;
+      btnNavAdmin.classList.add("hidden");
+    }
+  } else {
+    sessionBadge.classList.add("hidden");
+    btnNavAdmin.classList.add("hidden");
+    btnOpenLogin.classList.remove("hidden");
+    btnHeroLogin.classList.remove("hidden");
+    btnCardAuth.classList.remove("hidden");
+    btnLogout.classList.add("hidden");
+    resetAdminForm();
+    if (currentView === "admin") switchPage("home");
+  }
+
+  if (currentView === "models") renderModelsGrid();
+  if (currentView === "detail") renderCarDetailPage();
+  if (currentView === "cart") renderCartGrid();
+  if (currentView === "admin" && isAdmin()) renderAdminPanel();
+}
+
+function updateFormLivePreview() {
+  const modelVal = document.getElementById("fModel").value.trim() || "Audi A3";
+  const submodelVal = document.getElementById("fSubmodel").value.trim() || "RS 3 Sedan";
+  const driveVal = document.getElementById("fDrive").value;
+  const priceVal = Number(document.getElementById("fPrice").value || 0);
+  const stockVal = Number(document.getElementById("fStock").value || 0);
+  const hpVal = Number(document.getElementById("fHp").value || 0);
+  const colorVal = document.getElementById("fColor").value.trim() || "Rojo Progresivo";
+  const descVal = document.getElementById("fDescription").value.trim();
+  const validUrl = getValidUrl(document.getElementById("fUrl").value.trim());
+
+  document.getElementById("prevTitle").textContent =
+    modelVal === submodelVal ? modelVal : `${modelVal} · ${submodelVal}`;
+  document.getElementById("prevDrive").textContent = driveVal;
+  document.getElementById("prevMeta").textContent =
+    `Color: ${colorVal} · ${hpVal} HP · Stock: ${stockVal}`;
+  document.getElementById("prevDesc").textContent = descVal;
+  document.getElementById("prevPrice").textContent = `$${priceVal.toLocaleString("en-US")}`;
+
+  const prevImg = document.getElementById("prevImg");
+  const prevNoImg = document.getElementById("prevNoImg");
+  if (validUrl) {
+    prevImg.src = validUrl;
+    prevImg.classList.remove("hidden");
+    prevNoImg.classList.add("hidden");
+  } else {
+    prevImg.classList.add("hidden");
+    prevNoImg.classList.remove("hidden");
+  }
+}
+
+[
+  "fModel",
+  "fSubmodel",
+  "fDrive",
+  "fPrice",
+  "fStock",
+  "fHp",
+  "fColor",
+  "fUrl",
+  "fDescription"
+].forEach((id) => {
+  document.getElementById(id).addEventListener("input", updateFormLivePreview);
+  document.getElementById(id).addEventListener("change", updateFormLivePreview);
+});
+
+function resetAdminForm() {
+  productForm.reset();
+  document.getElementById("editId").value = "";
+  document.getElementById("fColor").value = "Rojo Progresivo";
+  btnSubmitProduct.textContent = "Añadir producto";
+  btnCancelForm.classList.add("hidden");
+  updateFormLivePreview();
+}
+
+function fillAdminForm(item) {
+  document.getElementById("editId").value = item.id;
+  document.getElementById("fModel").value = item.model;
+  document.getElementById("fSubmodel").value = item.submodel;
+  document.getElementById("fDrive").value = item.driveType;
+  document.getElementById("fCategory").value = item.categoryId || "";
+  document.getElementById("fPrice").value = item.price;
+  document.getElementById("fStock").value = item.stock;
+  document.getElementById("fHp").value = item.horsepower;
+  document.getElementById("fAccel").value = item.accel;
+  document.getElementById("fColor").value = item.color;
+  document.getElementById("fUrl").value = item.url || "";
+  document.getElementById("fDescription").value = item.description;
+  btnSubmitProduct.textContent = "Guardar cambios";
+  btnCancelForm.classList.remove("hidden");
+  updateFormLivePreview();
+  adminView.scrollIntoView({ behavior: "smooth" });
+}
+
+function openAdminDetailModal(item) {
+  modalInspectedProductId = item.id;
+  modalDetailTitle.textContent =
+    item.model === item.submodel ? item.model : `${item.model} · ${item.submodel}`;
+
+  adminFormattedDetailSection.classList.remove("hidden");
+  adminRawJsonSection.classList.add("hidden");
+  btnToggleRawJson.textContent = "Ver JSON crudo";
+
+  const rawObj = item._raw && typeof item._raw === "object" ? item._raw : toMockApiProductPayload(item);
+  modalRawJsonCode.textContent = JSON.stringify(rawObj, null, 2);
+
+  if (item.url) {
+    modalDetailImg.src = item.url;
+    modalDetailImg.alt = item.model;
+    modalDetailImg.classList.remove("hidden");
+    modalDetailNoImg.classList.add("hidden");
+  } else {
+    modalDetailImg.classList.add("hidden");
+    modalDetailNoImg.classList.remove("hidden");
+  }
+
+  modalDetailBody.innerHTML = `
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Modelo:</span> <strong>${item.model}</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Submodelo:</span> <strong>${item.submodel}</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Conducción:</span> <strong>${item.driveType}</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Color:</span> <strong>${item.color}</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Precio:</span> <strong>$${Number(item.price).toLocaleString("en-US")}</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Stock:</span> <strong>${item.stock}</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Potencia:</span> <strong>${item.horsepower} HP</strong></div>
+    <div class="rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">0–100 km/h:</span> <strong>${item.accel}</strong></div>
+    <div class="col-span-2 rounded-xl ios-glass-sub p-2.5 break-all"><span class="text-neutral-400">URL:</span> <span class="text-xs font-mono text-neutral-200">${item.url || "Sin URL"}</span></div>
+    <div class="col-span-2 rounded-xl ios-glass-sub p-2.5"><span class="text-neutral-400">Descripción:</span> ${item.description || "—"}</div>
+  `;
+
+  adminDetailModal.classList.remove("hidden");
+}
+
+btnToggleRawJson.addEventListener("click", () => {
+  const showingRaw = !adminRawJsonSection.classList.contains("hidden");
+  if (showingRaw) {
+    adminRawJsonSection.classList.add("hidden");
+    adminFormattedDetailSection.classList.remove("hidden");
+    btnToggleRawJson.textContent = "Ver JSON crudo";
+  } else {
+    adminFormattedDetailSection.classList.add("hidden");
+    adminRawJsonSection.classList.remove("hidden");
+    btnToggleRawJson.textContent = "Ver ficha";
+  }
+});
+
+document.getElementById("btnCopyRawJson").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(modalRawJsonCode.textContent);
+    showBanner("JSON crudo copiado al portapapeles.");
+  } catch (_) {}
+});
+
+function closeAdminDetailModal() {
+  adminDetailModal.classList.add("hidden");
+  modalInspectedProductId = null;
+}
+
+document.getElementById("btnCloseDetailModal").addEventListener("click", closeAdminDetailModal);
+document.getElementById("btnCloseDetailModalBtn").addEventListener("click", closeAdminDetailModal);
+document.getElementById("btnModalEditProduct").addEventListener("click", () => {
+  const target = items.find((i) => String(i.id) === String(modalInspectedProductId));
+  closeAdminDetailModal();
+  if (target) fillAdminForm(target);
+});
+
+function renderAdminProducts() {
+  adminProductList.innerHTML = "";
+  const q = adminSearchInput.value.trim().toLowerCase();
+  const driveSel = adminFilterDrive.value;
+
+  const filtered = items.filter((item) => {
+    const matchDrive = driveSel === "Todos" || item.driveType === driveSel;
+    const matchQ =
+      !q ||
+      item.model.toLowerCase().includes(q) ||
+      item.submodel.toLowerCase().includes(q) ||
+      item.color.toLowerCase().includes(q) ||
+      item.driveType.toLowerCase().includes(q);
+    return matchDrive && matchQ;
+  });
+
+  if (filtered.length === 0) {
+    adminProductList.innerHTML = `<div class="rounded-2xl ios-glass-sub p-4 text-xs sm:text-sm text-neutral-400">No hay productos que coincidan con el filtro en Admin.</div>`;
+    return;
+  }
+
+  filtered.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "rounded-2xl ios-glass-sub p-3.5 flex flex-wrap justify-between items-center gap-3 text-xs sm:text-sm";
+    row.innerHTML = `
+      <div class="flex items-center gap-3 min-w-0">
+        ${
+          item.url
+            ? `<img src="${item.url}" alt="${item.model}" class="w-14 h-10 object-contain rounded-lg bg-black/40 border border-white/10 p-1 shrink-0" onerror="this.style.display='none';" />`
+            : `<div class="w-14 h-10 rounded-lg bg-white/10 flex items-center justify-center text-[10px] font-bold text-neutral-300 shrink-0">SIN URL</div>`
+        }
+        <div class="truncate text-neutral-200">
+          <strong class="text-white">${item.model}</strong> (${item.submodel}) · <span class="text-neutral-300">${item.driveType}</span> · Color: <strong>${item.color}</strong> · Stock: ${item.stock} · $${Number(item.price).toLocaleString("en-US")}
+          ${item.url ? `<span class="text-emerald-400 font-semibold ml-1">· URL OK</span>` : `<span class="text-rose-400 font-semibold ml-1">· Falta URL</span>`}
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" data-id="${item.id}" class="btn-adm-view rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 transition">
+          Detalles
+        </button>
+        <button type="button" data-id="${item.id}" class="btn-adm-edit rounded-full border border-white/25 bg-white/10 hover:bg-white hover:text-neutral-950 text-white text-xs font-semibold px-3 py-1.5 transition">
+          Editar
+        </button>
+        <button type="button" data-id="${item.id}" class="btn-adm-del rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 py-1.5 transition">
+          Borrar
+        </button>
+      </div>
+    `;
+    adminProductList.appendChild(row);
+  });
+
+  adminProductList.querySelectorAll(".btn-adm-view").forEach((b) => {
+    b.addEventListener("click", () => {
+      const found = items.find((i) => String(i.id) === String(b.dataset.id));
+      if (found) openAdminDetailModal(found);
+    });
+  });
+
+  adminProductList.querySelectorAll(".btn-adm-edit").forEach((b) => {
+    b.addEventListener("click", () => {
+      const found = items.find((i) => String(i.id) === String(b.dataset.id));
+      if (found) fillAdminForm(found);
+    });
+  });
+
+  adminProductList.querySelectorAll(".btn-adm-del").forEach((b) => {
+    b.addEventListener("click", async () => {
+      await removeItem(b.dataset.id);
+    });
+  });
+}
+
+function renderAdminDeletedList() {
+  adminDeletedList.innerHTML = "";
+  if (deletedItems.length === 0) {
+    adminDeletedList.innerHTML = `<div class="rounded-2xl ios-glass-sub p-4 text-xs sm:text-sm text-neutral-400">No hay productos borrados por recuperar.</div>`;
+    return;
+  }
+
+  deletedItems.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "rounded-2xl bg-amber-500/10 border border-amber-400/25 p-3.5 flex flex-wrap justify-between items-center gap-3 text-xs sm:text-sm text-neutral-200";
+    row.innerHTML = `
+      <div>
+        <strong class="text-white">${item.model}</strong> (${item.submodel}) · Color: <strong>${item.color}</strong> · $${Number(item.price).toLocaleString("en-US")}
+      </div>
+      <div class="flex gap-2">
+        <button type="button" data-id="${item.id}" class="btn-adm-restore rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-1.5 transition">
+          Recuperar producto
+        </button>
+        <button type="button" data-id="${item.id}" class="btn-adm-purge rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-neutral-200 text-xs font-semibold px-3 py-1.5 transition">
+          Descartar
+        </button>
+      </div>
+    `;
+    adminDeletedList.appendChild(row);
+  });
+
+  adminDeletedList.querySelectorAll(".btn-adm-restore").forEach((b) => {
+    b.addEventListener("click", async () => {
+      await restoreDeletedItem(b.dataset.id);
+    });
+  });
+
+  adminDeletedList.querySelectorAll(".btn-adm-purge").forEach((b) => {
+    b.addEventListener("click", () => {
+      deletedItems = deletedItems.filter((d) => String(d.id) !== String(b.dataset.id));
+      renderAdminDeletedList();
+    });
+  });
+}
+
+async function restoreDeletedItem(id) {
+  if (!isAdmin()) return;
+  const target = deletedItems.find((d) => String(d.id) === String(id));
+  if (!target) return;
+
+  const payload = toMockApiProductPayload(target);
+
+  try {
+    let restored = normalizeRecord(payload);
+    if (!isLocalFallback) {
+      const res = await apiRequest(PRODUCTS_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      restored = normalizeRecord(await res.json());
+    }
+    deletedItems = deletedItems.filter((d) => String(d.id) !== String(id));
+    items = [...items, restored];
+    renderNews();
+    renderAdminProducts();
+    renderAdminDeletedList();
+    showBanner(`Producto recuperado: ${restored.model}.`);
+  } catch (err) {
+    showBanner(`Error al recuperar producto: ${err.message}`, true);
+  }
+}
+
+function renderAdminUsers() {
+  adminUsersList.innerHTML = "";
+  const clientAccounts = users.filter((u) => u.role !== "admin");
+  if (clientAccounts.length === 0) {
+    adminUsersList.innerHTML = `<p class="text-xs sm:text-sm text-neutral-400">Aún no hay cuentas de clientes registradas en /users.</p>`;
+    return;
+  }
+
+  clientAccounts.forEach((u) => {
+    const isPriv = u.role === "privilegiado";
+    const row = document.createElement("div");
+    row.className = "rounded-2xl ios-glass-sub p-3.5 flex flex-wrap justify-between items-center gap-3 text-xs sm:text-sm text-neutral-200";
+    row.innerHTML = `
+      <div>
+        <strong class="text-white">${u.name || u.username}</strong> (@${u.username} · ${u.gmail || "sin gmail"})
+        <span class="ml-1.5 rounded-full text-white text-xs font-semibold px-2.5 py-0.5 ${isPriv ? "bg-emerald-600" : "bg-white/15"}">${isPriv ? "Privilegiado" : "Cliente"}</span>
+      </div>
+      <button type="button" data-id="${u.id}" class="btn-toggle-priv rounded-full text-xs font-semibold px-3.5 py-1.5 transition ${isPriv ? "bg-white/15 hover:bg-white/25 text-white" : "bg-audiRed hover:bg-audiRedDark text-white"}">
+        ${isPriv ? "Quitar privilegios" : "Dar privilegios"}
+      </button>
+    `;
+    adminUsersList.appendChild(row);
+  });
+
+  adminUsersList.querySelectorAll(".btn-toggle-priv").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!isAdmin()) return;
+      const target = users.find((u) => String(u.id) === String(btn.dataset.id));
+      if (!target) return;
+      const nextRole = target.role === "privilegiado" ? "cliente" : "privilegiado";
+      try {
+        const res = await apiRequest(`${USERS_URL}/${target.id}`, {
+          method: "PUT",
+          body: JSON.stringify({ ...target, role: nextRole })
+        });
+        const updatedUser = await res.json();
+        users = users.map((u) => (String(u.id) === String(target.id) ? updatedUser : u));
+        renderAdminUsers();
+        showBanner(`Rol de @${updatedUser.username} actualizado a ${nextRole}.`);
+      } catch (err) {
+        showBanner(`Error al actualizar privilegios: ${err.message}`, true);
+      }
+    });
+  });
+}
+
+function renderAdminPanel() {
+  updateFormLivePreview();
+  renderAdminProducts();
+  renderAdminDeletedList();
+  renderAdminUsers();
+}
+
+async function removeItem(id) {
+  if (!isAdmin()) return;
+  const target = items.find((i) => String(i.id) === String(id));
+  if (!target) return;
+
+  if (!String(id).startsWith("local-") && !isLocalFallback) {
+    try {
+      await apiRequest(`${PRODUCTS_URL}/${id}`, { method: "DELETE" });
+    } catch (err) {
+      showBanner(`Error al borrar en MockAPI: ${err.message}`, true);
+      return;
+    }
+  }
+
+  deletedItems = [target, ...deletedItems.filter((d) => String(d.id) !== String(id))];
+  items = items.filter((i) => String(i.id) !== String(id));
+  renderNews();
+  renderAdminProducts();
+  renderAdminDeletedList();
+  showBanner(`Producto "${target.model}" movido a borrados. Puedes recuperarlo abajo.`);
+}
+
+productForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!isAdmin()) return;
+
+  const editId = document.getElementById("editId").value.trim();
+  const singleColor = document.getElementById("fColor").value.trim() || "Blanco Glaciar";
+  const modelVal = document.getElementById("fModel").value.trim();
+  const submodelVal = document.getElementById("fSubmodel").value.trim();
+  const rawUrl = document.getElementById("fUrl").value.trim();
+  const cleanUrl = getValidUrl(rawUrl);
+
+  const payload = toMockApiProductPayload({
+    model: modelVal,
+    submodel: submodelVal,
+    driveType: document.getElementById("fDrive").value,
+    categoryId: document.getElementById("fCategory").value,
+    price: Number(document.getElementById("fPrice").value),
+    stock: Number(document.getElementById("fStock").value),
+    horsepower: Number(document.getElementById("fHp").value),
+    accel: document.getElementById("fAccel").value.trim() || "6.5 s",
+    traction: "quattro",
+    color: singleColor,
+    colors: singleColor,
+    url: cleanUrl,
+    description: document.getElementById("fDescription").value.trim()
+  });
+
+  try {
+    if (editId && !editId.startsWith("local-")) {
+      const res = await apiRequest(`${PRODUCTS_URL}/${editId}`, {
+        method: "PUT",
+        body: JSON.stringify(payload)
+      });
+      const updated = normalizeRecord(await res.json());
+      items = items.map((i) => (String(i.id) === String(editId) ? updated : i));
+      showBanner(`Producto actualizado en MockAPI: ${updated.model}.`);
+    } else {
+      const res = await apiRequest(PRODUCTS_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      const created = normalizeRecord(await res.json());
+      items = isLocalFallback ? [created] : [...items, created];
+      isLocalFallback = false;
+      showBanner(`Producto guardado en MockAPI: ${created.model}.`);
+    }
+    resetAdminForm();
+    renderNews();
+    renderAdminProducts();
+  } catch (err) {
+    showBanner(`Error al guardar producto en MockAPI: ${err.message}`, true);
+  }
+});
+
+btnCancelForm.addEventListener("click", resetAdminForm);
+
+document.getElementById("btnReloadApi").addEventListener("click", async () => {
+  await fetchUsersFromApi();
+  await loadProducts();
+});
+
+function openAuthModal(mode = "login") {
+  loginError.textContent = "";
+  registerError.textContent = "";
+  authModal.classList.remove("hidden");
+  if (mode === "register") {
+    tabRegister.className = "rounded-full bg-white text-neutral-950 text-xs font-semibold py-2";
+    tabLogin.className = "rounded-full border border-white/15 bg-white/10 text-white text-xs font-semibold py-2";
+    registerForm.classList.remove("hidden");
+    loginForm.classList.add("hidden");
+  } else {
+    tabLogin.className = "rounded-full bg-white text-neutral-950 text-xs font-semibold py-2";
+    tabRegister.className = "rounded-full border border-white/15 bg-white/10 text-white text-xs font-semibold py-2";
+    loginForm.classList.remove("hidden");
+    registerForm.classList.add("hidden");
+  }
+}
+
+function closeAuthModal() {
+  authModal.classList.add("hidden");
+  loginForm.reset();
+  registerForm.reset();
+  loginError.textContent = "";
+  registerError.textContent = "";
+}
+
+btnOpenLogin.addEventListener("click", () => openAuthModal("login"));
+btnHeroLogin.addEventListener("click", () => openAuthModal("register"));
+btnCardAuth.addEventListener("click", () => openAuthModal("register"));
+document.getElementById("btnCloseModalX").addEventListener("click", closeAuthModal);
+tabLogin.addEventListener("click", () => openAuthModal("login"));
+tabRegister.addEventListener("click", () => openAuthModal("register"));
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const identifier = document.getElementById("loginUser").value.trim().toLowerCase();
+  const pass = document.getElementById("loginPass").value;
+  loginError.textContent = "Verificando cuenta...";
+
+  await fetchUsersFromApi();
+
+  if (identifier === ADMIN_USER.toLowerCase() && pass === ADMIN_PASS) {
+    const apiAdmin = users.find(
+      (u) => String(u.username || "").toLowerCase() === ADMIN_USER.toLowerCase()
+    );
+    currentUser = apiAdmin || {
+      name: "Administrador",
+      username: ADMIN_USER,
+      gmail: "",
+      role: "admin"
+    };
+    currentUser.role = "admin";
+    closeAuthModal();
+    syncSessionUI();
+    switchPage("admin");
+    showBanner("Sesión de administrador iniciada.");
+    return;
+  }
+
+  const found = users.find(
+    (u) =>
+      (String(u.username || "").toLowerCase() === identifier ||
+        String(u.gmail || "").toLowerCase() === identifier) &&
+      String(u.password || "") === pass
+  );
+
+  if (found) {
+    currentUser = found;
+    closeAuthModal();
+    syncSessionUI();
+    showBanner(`Bienvenido, ${found.name || found.username}. Tienes 3 % de descuento activo.`);
+  } else {
+    loginError.textContent =
+      "Cuenta no encontrada o contraseña incorrecta. Si no tienes cuenta, usa 'Crear cuenta'.";
+  }
+});
+
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = document.getElementById("regName").value.trim();
+  const username = document.getElementById("regUser").value.trim();
+  const gmail = document.getElementById("regGmail").value.trim().toLowerCase();
+  const password = document.getElementById("regPass").value;
+  registerError.textContent = "Validando y guardando en /users...";
+
+  await fetchUsersFromApi();
+
+  if (username.toLowerCase() === ADMIN_USER.toLowerCase()) {
+    registerError.textContent = "Ese nombre de usuario está reservado.";
+    return;
+  }
+
+  const userExists = users.some(
+    (u) => String(u.username || "").toLowerCase() === username.toLowerCase()
+  );
+  if (userExists) {
+    registerError.textContent = "Ese nombre de usuario ya está registrado.";
+    return;
+  }
+
+  const gmailExists = users.some(
+    (u) => String(u.gmail || "").toLowerCase() === gmail
+  );
+  if (gmailExists) {
+    registerError.textContent = "Ese Gmail ya está registrado.";
+    return;
+  }
+
+  try {
+    const res = await apiRequest(USERS_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        username,
+        gmail,
+        password,
+        role: "cliente"
+      })
+    });
+    const createdUser = await res.json();
+    users.push(createdUser);
+    currentUser = createdUser;
+    closeAuthModal();
+    syncSessionUI();
+    showBanner(`Cuenta creada para ${name}. ¡3 % de descuento activado!`);
+  } catch (err) {
+    registerError.textContent = `No se pudo guardar en /users (${err.message}).`;
+  }
+});
+
+btnLogout.addEventListener("click", () => {
+  currentUser = null;
+  syncSessionUI();
+  showBanner("Sesión cerrada.");
+});
+
+document.getElementById("brandHome").addEventListener("click", () => switchPage("home"));
+document.getElementById("btnNavHome").addEventListener("click", () => switchPage("home"));
+document.getElementById("btnNavModels").addEventListener("click", () => switchPage("models"));
+document.getElementById("btnNavCart").addEventListener("click", () => switchPage("cart"));
+document.getElementById("btnViewCartFromDetail").addEventListener("click", () => switchPage("cart"));
+document.getElementById("btnBackFromCart").addEventListener("click", () => {
+  switchPage(previousViewBeforeCart || "models");
+});
+btnRetractAllCart.addEventListener("click", retractAllCart);
+btnCheckoutCart.addEventListener("click", checkoutCart);
+btnNavAdmin.addEventListener("click", () => switchPage("admin"));
+document.getElementById("btnHeroModels").addEventListener("click", () => switchPage("models"));
+document.getElementById("cardGoModels").addEventListener("click", () => switchPage("models"));
+document.getElementById("btnBackFromModelsTab").addEventListener("click", () => switchPage("home"));
+document.getElementById("btnBackFromDetail").addEventListener("click", () => switchPage("models"));
+document.getElementById("btnBackFromAdmin").addEventListener("click", () => switchPage("home"));
+
+searchInput.addEventListener("input", () => {
+  if (currentView === "models") renderModelsGrid();
+});
+
+adminSearchInput.addEventListener("input", () => {
+  if (isAdmin()) renderAdminProducts();
+});
+
+adminFilterDrive.addEventListener("change", () => {
+  if (isAdmin()) renderAdminProducts();
+});
+
+(async function init() {
+  syncCornerVolumeUI();
+  setPaymentMethod(selectedPaymentMethod);
+  renderNews();
+  renderCartGrid();
+  syncSessionUI();
+  updateFormLivePreview();
+  try {
+    await fetchUsersFromApi();
+    await loadCategories();
+    await loadProducts();
+  } catch (_) {}
+})();
